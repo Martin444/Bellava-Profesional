@@ -1,6 +1,7 @@
 import 'package:bellava_prof/Screens/Home/Homepage.dart';
 import 'package:bellava_prof/Utils/anim/delayed_reveal.dart';
 import 'package:bellava_prof/Utils/button_green.dart';
+// import 'package:bellava_prof/Utils/consts copy.dart';
 import 'package:bellava_prof/Utils/consts.dart';
 import 'package:bellava_prof/Utils/gradient_back.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -41,7 +42,7 @@ class _SingninPageState extends State<SingninPage> {
                       style: TextStyle(
                           fontSize: 27.0,
                           fontFamily: "Lato",
-                          color: Colors.white,
+                          color: Colors.blueGrey,
                           fontWeight: FontWeight.bold
                       ),
                     ),
@@ -66,19 +67,20 @@ class _SingninPageState extends State<SingninPage> {
                             }
                           },
                           decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Color(0xFFe5e5e5),
-                              border: InputBorder.none,
-                              hintText: 'Email',
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFFe5e5e5)),
-                                  borderRadius: BorderRadius.all(Radius.circular(9.0))
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFFe5e5e5)),
-                                  borderRadius: BorderRadius.all(Radius.circular(9.0))
-                              )
-                          ),
+                            hintText: 'Email',
+                            fillColor: opacityCeleste2,
+                            filled: true,
+                            border:  InputBorder.none,
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: opacityCeleste2),
+                                borderRadius: BorderRadius.all(Radius.circular(12.0))
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: opacityCeleste2),
+                                borderRadius: BorderRadius.all(Radius.circular(12.0))
+                            )
+                        ),
+                        
                           onSaved: (input) => _email = input,
                         )
                     ),
@@ -102,20 +104,20 @@ class _SingninPageState extends State<SingninPage> {
                               return 'Provea un Email valido';
                             }
                           },
-                          decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Color(0xFFe5e5e5),
-                              border: InputBorder.none,
-                              hintText: 'Contraseña',
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFFe5e5e5)),
-                                  borderRadius: BorderRadius.all(Radius.circular(9.0))
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFFe5e5e5)),
-                                  borderRadius: BorderRadius.all(Radius.circular(9.0))
-                              )
-                          ),
+                           decoration: InputDecoration(
+                            hintText: 'Contrasña',
+                            fillColor: opacityCeleste2,
+                            filled: true,
+                            border:  InputBorder.none,
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: opacityCeleste2),
+                                borderRadius: BorderRadius.all(Radius.circular(12.0))
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: opacityCeleste2),
+                                borderRadius: BorderRadius.all(Radius.circular(12.0))
+                            )
+                        ),
                           onSaved: (input) => _password = input,
                           obscureText: true,
                         )
@@ -142,7 +144,7 @@ class _SingninPageState extends State<SingninPage> {
                           value: acept,),
                         Text("Acepto los términos y condiciones",
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.blueGrey,
                             fontSize: 18,
                             fontWeight: FontWeight.bold
                           ),
@@ -153,11 +155,14 @@ class _SingninPageState extends State<SingninPage> {
 
                   DelayedReveal(
                     delay: Duration(milliseconds: 1400),
-                    child: ButtonGreen(
-                      text: widget.textButton,
-                      onPressed: signin,
-                      width: 300.0,
-                      height: 50.0,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: ButtonGreen(
+                        text: widget.textButton,
+                        onPressed: signin,
+                        // width: 300.0,
+                        height: 50.0,
+                      ),
                     ),
                   ),
                 ],
@@ -166,6 +171,8 @@ class _SingninPageState extends State<SingninPage> {
         ],
       ),
     );
+  
+  
   }
 
     void signin() async {

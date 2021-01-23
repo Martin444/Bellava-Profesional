@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ButtonGreen extends StatefulWidget {
-  final String text;
+  final String text ;
   double width = 0.0;
   double height = 0.0;
   final VoidCallback onPressed;
 
-  ButtonGreen({Key key, @required this.text, @required this.onPressed, this.height, this.width});
+  ButtonGreen({Key key, @required this.text, @required this.onPressed, @required this.height, this.width});
 
   @override
   _ButtonGreenState createState() => _ButtonGreenState();
@@ -20,13 +20,13 @@ class _ButtonGreenState extends State<ButtonGreen> {
       child: Container(
         margin: EdgeInsets.only(
             top: 10.0,
-            left: 20.0,
-            right: 20.0
+            // left: 20.0,
+            // right: 20.0
         ),
         width: widget.width ,
         height: widget.height ,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
+            borderRadius: BorderRadius.circular(10.0),
             gradient: LinearGradient(
                 colors: [
                   Color(0xFF1cbb78),//arriba

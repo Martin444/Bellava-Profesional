@@ -7,6 +7,14 @@ final kdarkBlue= const Color(0xFF333366);
 final kblack = const Color(0xFF000000);
 final kgreyDark =  Colors.grey.shade700;
 final kgreyFill =  Colors.grey.shade100;
+final kceleste1= const Color(0xFf87DDF3);
+final kgreenPrimary = Color(0xff77D499);
+final kgreenOpacity = Color(0xffF0FBFE);
+final opacityCeleste1= const Color(0xffC3EEF9);
+final opacityCeleste2= const Color(0xffF0FBFE);
+final opacityCeleste3= const Color(0xffD5EEFF);
+final opacityPink1= const Color(0xffF3E3F9);
+final opacityPink2= const Color(0xffF3E3F9);
 
 //Textss
 

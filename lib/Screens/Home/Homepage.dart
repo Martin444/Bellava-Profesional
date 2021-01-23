@@ -3,13 +3,11 @@ import 'package:bellava_prof/Screens/Profile/profilePage.dart';
 import 'package:bellava_prof/Utils/consts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/animation.dart';
 import 'package:flutter/rendering.dart';
-import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:hidden_drawer_menu/hidden_drawer/hidden_drawer_menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bellava_prof/Screens/Home/MyProfile.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -54,7 +52,6 @@ class _HomePageState extends State<HomePage>  with SingleTickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-
     return StreamBuilder(
       stream: Firestore.instance
             .collection('users')
@@ -67,16 +64,17 @@ class _HomePageState extends State<HomePage>  with SingleTickerProviderStateMixi
               child: Text("No hay datos aun"),
             ),);
         }else{
+          print(snapshot.data['miBarrio']);
 
           var usere = User(
             uid: snapshot.data.documentID,
             name: snapshot.data['displayName'],
             miBarrio: snapshot.data['miBarrio'],
+            photoUrl: snapshot.data['photoURL'],
             type: snapshot.data['type']
             // email: snapshot.data.email,
             // photoURL: snapshot.data.photoUrl,
             );
-            print(snapshot.data.documentID);
 
         return Scaffold(
           body: HiddenDrawerMenu(
@@ -90,16 +88,24 @@ class _HomePageState extends State<HomePage>  with SingleTickerProviderStateMixi
                     baseStyle: TextStyle( color: Colors.white, fontSize: 23.0, fontWeight: FontWeight.w600 ),
                     colorLineSelected: Colors.teal,
                   ),
-                  ProfilePage(usere)
+                  ProfilePage(user: usere)
+                ),
+                ScreenHiddenDrawer(
+                  new ItemHiddenMenu(
+                    name: "Mi perfil",
+                    baseStyle: TextStyle( color: Colors.white, fontSize: 23.0, fontWeight: FontWeight.w600 ),
+                    colorLineSelected: Colors.teal,
+                  ),
+                  MyProfile(user: usere)
                 ),
 
                   ScreenHiddenDrawer(
                     new ItemHiddenMenu(
-                      name: "Servicios realizados",
+                      name: "Historial",
                       baseStyle: TextStyle( color: Colors.white, fontSize: 21.0, fontWeight: FontWeight.w600 ),
                       colorLineSelected: Colors.orange,
                     ),
-                    ProfilePage(usere)
+                    ProfilePage(user: usere)
                   ),
 
                     ScreenHiddenDrawer(
@@ -108,7 +114,7 @@ class _HomePageState extends State<HomePage>  with SingleTickerProviderStateMixi
                         baseStyle: TextStyle( color: Colors.white, fontSize: 21.0, fontWeight: FontWeight.w600 ),
                         colorLineSelected: Colors.orange,
                       ),
-                      ProfilePage(usere)
+                      ProfilePage(user: usere)
                     ),
             ],
                  typeOpen: TypeOpen.FROM_LEFT,

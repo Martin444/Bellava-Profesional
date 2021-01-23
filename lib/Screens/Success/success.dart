@@ -1,6 +1,5 @@
 
 import 'package:bellava_prof/Models/user.dart';
-import 'package:bellava_prof/Screens/Home/Homepage.dart';
 import 'package:bellava_prof/Utils/anim/delayed_reveal.dart';
 import 'package:bellava_prof/Utils/consts.dart';
 import 'package:bellava_prof/Utils/gradient_back.dart';
@@ -38,7 +37,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               center: new Text("Procesando",
               style: TextStyle(
                 fontSize: 20,
-                color: Colors.white,
+                color: Colors.blueGrey,
                   fontWeight: FontWeight.w400
               ),
               ),
@@ -50,7 +49,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     "Listo!",
                     style: TextStyle(
                       fontSize: 30,
-                      color: Colors.white,
+                      color: Colors.blueGrey,
                       fontWeight: FontWeight.bold
                     ),
                   ),
@@ -71,6 +70,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               ),
               backgroundColor: korange,
               onPressed: (){
+                Navigator.pop(context);
                 Navigator.pop(context);
               },
             ),

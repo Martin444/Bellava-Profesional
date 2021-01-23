@@ -1,15 +1,10 @@
 import 'package:bellava_prof/Models/orders.dart';
 import 'package:bellava_prof/Models/user.dart';
-import 'package:bellava_prof/Screens/Success/success.dart';
-import 'package:bellava_prof/Utils/SIzeConfig.dart';
+import 'package:bellava_prof/Screens/Profile/order_detail.dart';
 import 'package:bellava_prof/Utils/anim/delayed_reveal.dart';
-import 'package:bellava_prof/Utils/button_green.dart';
-import 'package:bellava_prof/Utils/consts.dart';
-import 'package:bellava_prof/Utils/map.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bellava_prof/Utils/consts copy.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:latlong/latlong.dart';
 
 class CardOrder extends StatefulWidget {
 
@@ -30,580 +25,133 @@ class _CardOrderState extends State<CardOrder> {
 
   @override
   Widget build(BuildContext context) {
-  String titleBtnGreen =  "Aceptar pedido";
 
-  if (widget.order.state == "En Proceso"){
-    setState(() {
-      titleBtnGreen =  "Aceptar pedido";
-    });
-  } else if (widget.order.state == "Aceptado"){
-    setState(() {
-      titleBtnGreen =  "Estaré en breve";
-    });
-  } else if (widget.order.state == "En Breve"){
-    setState(() {
-      titleBtnGreen =  "Voy en camino";
-    });
-  } else if (widget.order.state == "En camino"){
-    setState(() {
-      titleBtnGreen =  "Finalizar";
-    });
-  } else if (widget.order.state == "Finalizado"){
-    setState(() {
-      titleBtnGreen =  "Listo!";
-    });
-  }
-
-  List<Icon> stars = new List<Icon>();
-
-    widget.order.stars != null ? 
-
-      widget.order.stars.forEach((e) {
-        e == true ? stars.add( Icon(Icons.star, color: Colors.amberAccent, size: 34,)) : stars.add( Icon(Icons.star_border, color: Colors.white, size: 34,));
-        print(e);
-      })
-
-      :
-      null;
-
-
-      createAlertDialog() async {
-        return showDialog(
-          context: context,
-          builder: (BuildContext context){
-            return AlertDialog(
-              title: Text("Genial!"),
-              content: Container(
-                height: 100,
-                child: 
-                  Container(
-                    child: Text("Ahora este pedido pasará a estar en tu lista de Servicios Activos"),
-                  )
-            
-              ),
-            
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("Acepto"),
-                  onPressed: (){
-                    Firestore.instance.collection('orders').document(widget.order.uid).updateData({
-                      'state' : 'Aceptado',
-                      'profesionalID' : widget.user.uid,
-                      'profesionalName' : widget.user.name
-                    });
-                    Navigator.pop(context);
-                    Navigator.push(context, new MaterialPageRoute(builder: (BuildContext context) =>
-                      new SuccessScreen()
-                    ));
-                  },
-                )
-              ],
-            
-            );
-          }
-        );
+    Color setCOlor (){
+      switch (widget.order.type) {
+        case 'Manicura':
+            return Color.fromRGBO(250, 208, 211, 1.8);
+          break;
+        case 'Pedicura':
+            return Color.fromRGBO(250, 208, 211, 1.8);
+          break;
+        case 'Manicura y Pedicura':
+            return Color.fromRGBO(243, 227, 249, 1.8);
+          break;
+        case 'Pestañas':
+            return Color.fromRGBO(250, 208, 211, 1.8);
+          break;
+        case 'Masajes coorporales':
+            return Color.fromRGBO(250, 203, 203, 1.8);
+          break;
+        case 'Cejas':
+            return Color.fromRGBO(247, 213, 224, 1.8);
+          break;
+        default:
       }
-
-
-      
-      _showBottomSheet() {
-      return showModalBottomSheet(
-          backgroundColor: Colors.transparent,
-          context: context,
-          builder: (context) {
-            return Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: 10, bottom: 10),
-                    child: Center(
-                      child: Text(
-                        "Ubicación",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  
-                  //Aplicar mapa googleMaps
-                  Container(
-                    width: MediaQuery.of(context).size.width / 1.2,
-                    height: MediaQuery.of(context).size.height / 2.7,
-                    child: Maped(lat: LatLng(widget.order.latitude, widget.order.longitude),),
-                  ),
-
-                  ButtonGreen(
-                   text: titleBtnGreen,
-                   onPressed: (){
-                     print(widget.order.state );
-                     if(widget.order.state == "En proceso"){
-
-                      //  print(widget.order.state );
-                      //  setState(() {
-                      //    titleBtnGreen = "Estaré en breve";
-                      //  });
-                        Navigator.pop(context);
-                        createAlertDialog();
-                     } else if (widget.order.state == "Aceptado"){
-                       print(widget.order.state );
-                       setState(() {
-                         titleBtnGreen = "Estoy en camino";
-                       });
-                       Navigator.pop(context);
-                       Firestore.instance.collection('orders').document(widget.order.uid).updateData({
-                          'state' : 'En Breve',
-                          'profesionalID' : widget.user.uid,
-                          'profesionalName' : widget.user.name
-                        });
-                     } else if (widget.order.state == "En Breve"){
-                       print(widget.order.state );
-                       setState(() {
-                         titleBtnGreen = "Finalizar";
-                       });
-                       Navigator.pop(context);
-                       Firestore.instance.collection('orders').document(widget.order.uid).updateData({
-                          'state' : 'En camino',
-                          'profesionalID' : widget.user.uid,
-                          'profesionalName' : widget.user.name
-                        });
-                     } else if (widget.order.state == "En camino"){
-                       print(widget.order.state );
-                       setState(() {
-                         titleBtnGreen = "Listo!";
-                       });
-                       Navigator.pop(context);
-                       Firestore.instance.collection('orders').document(widget.order.uid).updateData({
-                          'state' : 'Finalizado',
-                          'profesionalID' : widget.user.uid,
-                          'profesionalName' : widget.user.name
-                        });
-                     }
-                   },
-                   height: 45,
-                  )
-
-                ],
-              ),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).canvasColor,
-                  borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(60),
-                      topRight: const Radius.circular(60))),
-            );
-          });
     }
+    
 
-
-    return  Container(
-          margin: EdgeInsets.only(top:10, bottom: 10),
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Column(children: <Widget>[
-          DelayedReveal(
-              delay: Duration(milliseconds: 300),
-              child: Container(
-                  width: SizeConfig.heightMultiplier,
+   return  Container(
+          margin: EdgeInsets.only(top: 10, bottom: 10),
+          child: Stack(
+            alignment: AlignmentDirectional.centerStart,
+            children: <Widget>[
+              DelayedReveal(
+                delay: Duration(milliseconds: 300),
+                child: Container(
+                  // width: SizeConfig.heightMultiplier,
                   decoration: BoxDecoration(
-                  color: widget.order.state != "Finalizado" ? Color(0xFFB78DD9) : Colors.blueGrey,
-                  borderRadius: BorderRadius.circular(20),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                  BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 10.0,
+                      offset: Offset(0.0, 2.0))
+                ],
                   ),
-                child: ExpansionTile(
-                  leading: Icon(Icons.list, color: Colors.white,),
-                  title: Text(widget.order.type,
-                   style: TextStyle(
-                     color: Colors.white,
-                     fontSize: 21,
-                     fontWeight: FontWeight.bold
-                     ),
-                    ),
-                  children: <Widget>[
-                       
-                    DelayedReveal(
-                          delay: Duration(milliseconds: 400),
-                          child:  Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:20.0, vertical: 12.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "Nombre del Cliente:",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                  ),
-                                ),
+                  child: ListTile(
+                    onTap: (){
+                      // _.goToDetails(widget.order);
 
-                                Text(
-                                  "${widget.order.userOwner}",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ], 
-                            ),
-                          ),
-                        ),
-               
-                      
-                      
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrderDetails(order: widget.order,user: widget.user,)));
+                    },
 
-                      DelayedReveal(
-                          delay: Duration(milliseconds: 400),
-                          child:  Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:20.0, vertical: 12.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "Dia/Hora",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                  ),
-                                ),
-
-                                Text(
-                                  "${widget.order.recolectionStart}",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ], 
-                            ),
-                          ),
-                        ),
-                      
-                      
-                      DelayedReveal(
-                          delay: Duration(milliseconds: 400),
-                          child:  Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:20.0, vertical: 12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "¿Horario Flexible?",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                  ),
-                                ),
-
-                                widget.order.flexible ?
-
-                                Text(
-                                  "Si",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.w700
-                                  ),
-                                )
-                                :
-                                Text(
-                                  "No",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                             
-                              ], 
-                            ),
-                          ),
-                        ),
-
-                      DelayedReveal(
-                          delay: Duration(milliseconds: 400),
-                          child:  Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:20.0, vertical: 12.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "Dirección:",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                  ),
-                                ),
-
-                                Text(
-                                  widget.order.direction,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ], 
-                            ),
-                          ),
-                        ),
-
-
-                         DelayedReveal(
-                          delay: Duration(milliseconds: 400),
-                          child:  Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:20.0, vertical: 12.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "Tipo de vivienda: ",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                  ),
-                                ),
-
-                                Text(
-                                  widget.order.typeHouse,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ], 
-                            ),
-                          ),
-                        ),
-
-                         DelayedReveal(
-                          delay: Duration(milliseconds: 400),
-                          child:  Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:20.0, vertical: 12.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Container(
-                                  width: MediaQuery.of(context).size.width / 1,
-                                  child: Text(
-                                    "Especificacion del servicio",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 21,
-                                    ),
-                                  ),
-                                ),
-
-                                Container(
-                                  width: MediaQuery.of(context).size.width / 1,
-                                  child: Column(
-                                    children: 
-                                      widget.order.services.map((e) => 
-                                        e != null ?
-                                        Text("$e",
-                                          style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 21,
-                                          fontWeight: FontWeight.w700
-                                        ),
-                                      )
-                                      :
-                                      Container()
-                                      ).toList()
-                                    ,
-                                  )
-                                ),
-                              ], 
-                            ),
-                          ),
-                        ),
-
-                        
-                         DelayedReveal(
-                          delay: Duration(milliseconds: 400),
-                          child:  Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:20.0, vertical: 12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "Comentarios",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                  ),
-                                ),
-
-                                Text(
-                                  widget.order.description,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ], 
-                            ),
-                          ),
-                        ),
-                        
-                         DelayedReveal(
-                          delay: Duration(milliseconds: 400),
-                          child:  Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:20.0, vertical: 12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "Total pagado",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                  ),
-                                ),
-
-                                Text(
-                                  "${widget.order.price}",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ], 
-                            ),
-                          ),
-                        ),
-
-                        DelayedReveal(
-                          delay: Duration(milliseconds: 400),
-                          child:  Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:20.0, vertical: 12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "Método de pago",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                  ),
-                                ),
-
-                                Text(
-                                  widget.order.typePayment,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ], 
-                            ),
-                          ),
-                        ),
-
-
-                        DelayedReveal(
-                          delay: Duration(milliseconds: 400),
-                          child:  Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:20.0, vertical: 12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "Teléfono",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                  ),
-                                ),
-
-                                Text(
-                                  widget.order.numberPhone,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ], 
-                            ),
-                          ),
-                        ),
-
-                        DelayedReveal(
-                          delay: Duration(milliseconds: 400),
-                          child:  Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:20.0, vertical: 12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  "Estado del pedido",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                  ),
-                                ),
-
-                                Text(
-                                  widget.order.state,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 21,
-                                    fontWeight: FontWeight.w700
-                                  ),
-                                ),
-                              ], 
-                            ),
-                          ),
-                        ),
-
-                      widget.order.state != "Finalizado" ?
-
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: FlatButton(
-                            color: korange,
-                            child: Text(
-                              "Más",
+                    // Fila de arriba
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Servicio - ',
                               style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 19
-                              ),
-                              
-                              ),
-                            onPressed: (){
-                              _showBottomSheet();
-                            },
+                                  color: Color(0xff66A6B7),
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold),
                             ),
-                        )
-                      : 
-
-                        Container(
-                          height: 70,
-                          alignment: Alignment.center,
-                          child: Center(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: stars,
+                            Text(
+                              widget.order.state,
+                              style: TextStyle(
+                                  color: widget.order.state == 'Finalizado' ||
+                                          widget.order.state == 'En proceso'
+                                      ? Colors.redAccent
+                                      : kceleste1,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
                             ),
+                          ],
+                        ),
+                        Text(
+                          'Fecha y hora',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff66A6B7),
                           ),
                         )
-                  
-                  
-                  ],
+                      ],
+                    ),
+                    subtitle: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${widget.order.type.split(" ")[0]}...',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Colors.blueGrey),
+                        ),
+                        Text(
+                          widget.order.recolectionStart,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              // fontSize: 13,
+                              color: Colors.blueGrey),
+                        ),
+                      ],
+                    ),
+                    // trailing: SvgPicture.asset(
+                    //   'assets/icons/chevron-right.svg',
+                    //   height: 20,
+                    //   color: kceleste1,
+                    // ),
+                  ),
                 ),
               ),
-            ),
-          
-          ],)
-        );
-     
+              Container(
+                margin: EdgeInsets.only(left: 5),
+                width: 4,
+                height: 40,
+                decoration: BoxDecoration(
+                color: setCOlor(),
+                borderRadius: BorderRadius.circular(10)
+
+                ),
+              ),
+            ],
+          ));
+    
+  
      
   }
 }

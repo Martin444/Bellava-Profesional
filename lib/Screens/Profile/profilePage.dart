@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class ProfilePage extends StatefulWidget {
   User user;
 
-  ProfilePage(this.user);
+  ProfilePage({this.user});
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -22,13 +22,12 @@ class _ProfilePageState extends State<ProfilePage>  with SingleTickerProviderSta
   void initState() {
     super.initState();
     tabController = TabController(length: 2, vsync: this);
-    print(widget.user.name);
   }
 
 
   @override
   Widget build(BuildContext context) {
-
+   
     return Container(
       alignment: Alignment.center,
       child: Column(
